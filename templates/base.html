@@ -1,0 +1,58 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}AUTOMATIK CR{% endblock %}</title>
+  <meta name="description" content="Automatización, bots, páginas web, IA y soluciones digitales para empresas en Costa Rica.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="/">
+        <img src="{{ url_for('static', filename='img/logo-perfil.png') }}" alt="AUTOMATIK CR">
+        <span>AUTOMATIK <b>CR</b></span>
+      </a>
+      <button class="menu-toggle" aria-label="Abrir menú" onclick="document.body.classList.toggle('menu-open')">☰</button>
+      <nav>
+        <a href="/#servicios">Servicios</a>
+        <a href="/#industrias">Industrias</a>
+        <a href="/demo-restaurante">Demo restaurante</a>
+        <a href="/#proceso">Proceso</a>
+        <a href="/#contacto">Contacto</a>
+      </nav>
+      <a class="btn primary nav-cta" href="https://wa.me/50671642558?text=Hola%20AUTOMATIK%20CR,%20quiero%20conocer%20sus%20soluciones." target="_blank" rel="noopener">Cotizar por WhatsApp</a>
+    </div>
+  </header>
+
+  {% block content %}{% endblock %}
+
+  <footer>
+    <div class="container footer-grid">
+      <div>
+        <div class="footer-brand">AUTOMATIK <span>CR</span></div>
+        <p>Automatizamos procesos. Simplificamos negocios.</p>
+      </div>
+      <div>
+        <b>Contacto</b>
+        <a href="https://wa.me/50671642558" target="_blank">+506 7164 2558</a>
+        <a href="mailto:automatikcr@outlook.es">automatikcr@outlook.es</a>
+      </div>
+      <div>
+        <b>Web</b>
+        <a href="https://automatik-cr.onrender.com/" target="_blank">automatik-cr.onrender.com</a>
+        <span>Costa Rica 🇨🇷</span>
+      </div>
+    </div>
+    <div class="container copyright">© 2026 AUTOMATIK CR · Soluciones digitales para empresas.</div>
+  </footer>
+
+  <a class="floating-wa" href="https://wa.me/50671642558?text=Hola%20AUTOMATIK%20CR" target="_blank" aria-label="WhatsApp">✆</a>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

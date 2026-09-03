@@ -1,0 +1,61 @@
+
+{% extends "base.html" %}
+{% block title %}Demo Restaurante | AUTOMATIK CR{% endblock %}
+{% block content %}
+<section class="demo-hero">
+  <div class="container">
+    <span class="eyebrow">DEMO INTERACTIVO</span>
+    <h1>Así podría funcionar un pedido digital.</h1>
+    <p>Agrega productos, confirma el pedido y observa cómo llega automáticamente al panel de cocina.</p>
+  </div>
+</section>
+
+<section class="section demo-section">
+  <div class="container demo-grid">
+    <div class="demo-menu">
+      <div class="demo-header"><div><small>MENÚ DIGITAL</small><h2>Sabores del Mar</h2></div><span>Mesa 7</span></div>
+      <div class="product" data-name="Ceviche Mixto" data-price="6500">
+        <div><b>Ceviche Mixto</b><p>Pescado fresco, limón, cebolla y culantro.</p></div>
+        <div><strong>₡6.500</strong><button class="add-item">Agregar</button></div>
+      </div>
+      <div class="product" data-name="Casado del Mar" data-price="6000">
+        <div><b>Casado del Mar</b><p>Pescado, arroz, frijoles, ensalada y plátano.</p></div>
+        <div><strong>₡6.000</strong><button class="add-item">Agregar</button></div>
+      </div>
+      <div class="product" data-name="Pescado al Ajillo" data-price="7200">
+        <div><b>Pescado al Ajillo</b><p>Filete con ajo, vegetales y acompañamiento.</p></div>
+        <div><strong>₡7.200</strong><button class="add-item">Agregar</button></div>
+      </div>
+      <div class="cart">
+        <div class="cart-title"><h3>Tu pedido</h3><span id="cartCount">0 productos</span></div>
+        <div id="cartItems" class="cart-items"><p class="muted">Agrega productos para iniciar.</p></div>
+        <div class="cart-total"><span>Total</span><b id="cartTotal">₡0</b></div>
+        <button class="btn primary full" id="sendOrder">Enviar pedido</button>
+      </div>
+    </div>
+
+    <div class="kitchen-screen">
+      <div class="screen-top"><div><small>PANEL DE COCINA</small><h2>Órdenes</h2></div><span class="live-dot">● EN LÍNEA</span></div>
+      <div id="emptyKitchen" class="empty-kitchen">
+        <div>🔔</div><h3>Esperando nuevo pedido</h3><p>Cuando el cliente confirme, la orden aparecerá aquí.</p>
+      </div>
+      <div id="kitchenOrder" class="kitchen-order hidden">
+        <div class="order-head"><div><small>NUEVA ORDEN</small><h3>Pedido #1042</h3></div><span>Mesa 7</span></div>
+        <div id="kitchenItems"></div>
+        <div class="kitchen-actions">
+          <button id="prepBtn">Preparar pedido</button>
+          <span id="orderStatus">Recibido</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section mini-cta">
+  <div class="container">
+    <h2>Este es solo un ejemplo.</h2>
+    <p>Podemos adaptar menú, colores, pagos, usuarios, cocina, reportes y flujos a cada restaurante.</p>
+    <a class="btn primary" href="https://wa.me/50671642558?text=Hola%20AUTOMATIK%20CR,%20me%20interesa%20el%20demo%20para%20restaurantes." target="_blank">Quiero una solución así</a>
+  </div>
+</section>
+{% endblock %}

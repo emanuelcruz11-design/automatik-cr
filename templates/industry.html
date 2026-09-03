@@ -1,0 +1,47 @@
+
+{% extends "base.html" %}
+{% block title %}{{ item.name }} | AUTOMATIK CR{% endblock %}
+{% block content %}
+<section class="inner-hero">
+  <div class="container">
+    <a class="back-link" href="/#industrias">← Soluciones por industria</a>
+    <div class="industry-hero-grid">
+      <div>
+        <div class="big-icon">{{ item.icon }}</div>
+        <span class="eyebrow">SOLUCIÓN PARA</span>
+        <h1>{{ item.name }}</h1>
+        <p>{{ item.tagline }}</p>
+        <a class="btn primary" href="https://wa.me/50671642558?text=Hola%20AUTOMATIK%20CR,%20quiero%20información%20sobre%20la%20solución%20para%20{{ item.name|urlencode }}." target="_blank">Solicitar información</a>
+      </div>
+      <img src="{{ url_for('static', filename='img/industry-tech.png') }}" alt="Tecnología aplicada">
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container problem-solution-grid">
+    <div class="info-panel">
+      <span class="eyebrow">RETOS QUE PODEMOS ATACAR</span>
+      <h2>Problemas comunes</h2>
+      {% for problem in item.problems %}
+      <div class="list-row"><b>×</b><span>{{ problem }}</span></div>
+      {% endfor %}
+    </div>
+    <div class="info-panel accent">
+      <span class="eyebrow">PROPUESTA AUTOMATIK</span>
+      <h2>Soluciones posibles</h2>
+      {% for solution in item.solutions %}
+      <div class="list-row"><b>✓</b><span>{{ solution }}</span></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section mini-cta">
+  <div class="container">
+    <h2>La solución final se adapta a tu operación.</h2>
+    <p>Analizamos tu flujo actual antes de definir qué automatizar y cómo implementarlo.</p>
+    <a class="btn primary" href="https://wa.me/50671642558" target="_blank">Hablar con AUTOMATIK CR</a>
+  </div>
+</section>
+{% endblock %}
