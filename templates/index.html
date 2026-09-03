@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AUTOMATIK CR | Automatización para negocios</title>
+  <meta name="description" content="AUTOMATIK CR desarrolla bots, automatizaciones, páginas web y soluciones digitales para empresas en Costa Rica.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="container nav-inner">
+    <a href="#inicio" class="brand">
+      <div class="brand-icon">🤖</div>
+      <div>
+        <div class="brand-name">AUTOMATIK <span>CR</span></div>
+        <div class="brand-tag">AUTOMATIZAMOS TU ÉXITO</div>
+      </div>
+    </a>
+
+    <nav class="menu">
+      <a href="#inicio">Inicio</a>
+      <a href="#servicios">Servicios</a>
+      <a href="#restaurantes">Restaurantes</a>
+      <a href="#proceso">Proceso</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+
+    <a href="#contacto" class="btn btn-primary nav-cta">Solicitar cotización</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="inicio">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <div class="eyebrow">TECNOLOGÍA PARA HACER CRECER TU NEGOCIO</div>
+        <h1>Automatizamos procesos.<br><span>Simplificamos negocios.</span></h1>
+        <p>Desarrollamos bots, automatizaciones, páginas web, herramientas digitales y soluciones a la medida para empresas en Costa Rica.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#servicios">Ver servicios</a>
+          <a class="btn btn-outline" href="#contacto">Agenda una demo</a>
+        </div>
+        <div class="trust-row">
+          <div>🛡️ Soluciones confiables</div>
+          <div>🇨🇷 Hechas en Costa Rica</div>
+          <div>🎧 Acompañamiento personalizado</div>
+        </div>
+      </div>
+
+      <div class="dashboard-card">
+        <div class="dashboard-top">
+          <h3>Dashboard</h3>
+          <span>● En línea</span>
+        </div>
+        <div class="stats">
+          <div><small>Conversaciones</small><strong>1,248</strong><span>+18%</span></div>
+          <div><small>Tareas automatizadas</small><strong>320</strong><span>+24%</span></div>
+          <div><small>Horas ahorradas</small><strong>56h</strong><span>+31%</span></div>
+        </div>
+        <div class="automation-flow">
+          <div class="flow-title">Flujo de automatización</div>
+          <div class="flow">
+            <div class="node">💬</div><div class="line"></div>
+            <div class="node">⚙️</div><div class="line"></div>
+            <div class="node">✉️</div><div class="line"></div>
+            <div class="node">✅</div>
+          </div>
+        </div>
+        <div class="activity">
+          <div><span>WhatsApp</span><b>Nuevo pedido #1025</b></div>
+          <div><span>Correo</span><b>Confirmación enviada</b></div>
+          <div><span>Sitio web</span><b>Nuevo contacto</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="servicios">
+    <div class="container">
+      <div class="section-heading">
+        <span>NUESTROS SERVICIOS</span>
+        <h2>Tecnología que impulsa tu negocio</h2>
+        <p>Soluciones prácticas para reducir trabajo manual, mejorar la atención y tener más control de tus procesos.</p>
+      </div>
+
+      <div class="cards">
+        <article class="service-card"><div class="icon">🤖</div><h3>Bots empresariales</h3><p>Automatizamos consultas, atención al cliente y procesos internos.</p></article>
+        <article class="service-card"><div class="icon">🌐</div><h3>Páginas web</h3><p>Sitios modernos, rápidos y optimizados para convertir visitantes en clientes.</p></article>
+        <article class="service-card"><div class="icon">✉️</div><h3>Correos masivos</h3><p>Automatizamos envíos, adjuntos, reportes y seguimiento.</p></article>
+        <article class="service-card"><div class="icon">⚙️</div><h3>Automatización</h3><p>Eliminamos tareas repetitivas y conectamos tus procesos.</p></article>
+        <article class="service-card"><div class="icon">📊</div><h3>Dashboards</h3><p>Información clara y reportes para tomar mejores decisiones.</p></article>
+        <article class="service-card"><div class="icon">🧩</div><h3>A la medida</h3><p>Desarrollamos soluciones específicas para cada empresa.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="restaurant" id="restaurantes">
+    <div class="container restaurant-grid">
+      <div class="restaurant-copy">
+        <span>SOLUCIÓN DESTACADA</span>
+        <h2>Automatización para restaurantes</h2>
+        <p>Menú digital, pedidos, cocina, estados, pagos y reportes en un solo flujo.</p>
+        <ul>
+          <li>Menú digital personalizado</li>
+          <li>Pedidos desde mesa o mostrador</li>
+          <li>Notificaciones a cocina</li>
+          <li>Control de estados y pagos</li>
+          <li>Reportes de ventas y productos</li>
+        </ul>
+      </div>
+
+      <div class="order-flow">
+        <div class="order-step">
+          <small>1. Menú digital</small>
+          <h3>Sabores del Mar</h3>
+          <div class="menu-item"><span>🍽️ Ceviche Mixto</span><b>₡6.500</b></div>
+          <div class="menu-item"><span>🍛 Casado del Mar</span><b>₡6.000</b></div>
+          <div class="menu-item"><span>🐟 Pescado al Ajillo</span><b>₡7.200</b></div>
+          <button>Ver carrito (2)</button>
+        </div>
+
+        <div class="order-step">
+          <small>2. Pedido realizado</small>
+          <h3>Pedido #1042</h3>
+          <span class="status ok">Confirmado</span>
+          <p>Mesa 7</p>
+          <p>2 platos · 1 bebida</p>
+          <div class="total"><span>Total</span><b>₡12.500</b></div>
+        </div>
+
+        <div class="order-step">
+          <small>3. En cocina</small>
+          <h3>Nueva orden 🔔</h3>
+          <p>1x Ceviche Mixto</p>
+          <p>1x Casado del Mar</p>
+          <div class="note">Sin cebolla en el ceviche</div>
+          <button class="orange">Preparar pedido</button>
+        </div>
+
+        <div class="order-step">
+          <small>4. Pago y resumen</small>
+          <h3>Pago completado ✅</h3>
+          <p>Tarjeta •••• 4242</p>
+          <div class="total"><span>Total pagado</span><b>₡12.500</b></div>
+          <p class="thanks">¡Gracias por tu preferencia!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="proceso">
+    <div class="container">
+      <div class="section-heading">
+        <span>NUESTRO PROCESO</span>
+        <h2>De la idea a una solución funcionando</h2>
+      </div>
+      <div class="process">
+        <div><strong>1</strong><h3>Analizamos</h3><p>Entendemos tu negocio y el problema que quieres resolver.</p></div>
+        <div><strong>2</strong><h3>Diseñamos</h3><p>Creamos una solución clara, práctica y escalable.</p></div>
+        <div><strong>3</strong><h3>Implementamos</h3><p>Desarrollamos, probamos y ponemos todo en funcionamiento.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="benefits">
+    <div class="container benefits-grid">
+      <div><span>⏱️</span><h3>Ahorro de tiempo</h3><p>Menos tareas manuales.</p></div>
+      <div><span>🛡️</span><h3>Menos errores</h3><p>Procesos más consistentes.</p></div>
+      <div><span>📈</span><h3>Más control</h3><p>Información más clara.</p></div>
+      <div><span>👥</span><h3>Mejor atención</h3><p>Respuestas más rápidas.</p></div>
+    </div>
+  </section>
+
+  <section class="cta" id="contacto">
+    <div class="container cta-box">
+      <div>
+        <span>AUTOMATIK CR</span>
+        <h2>Llevemos tu negocio al siguiente nivel</h2>
+        <p>Cuéntanos qué proceso quieres mejorar y te ayudamos a diseñar la solución.</p>
+      </div>
+      <div class="cta-actions">
+        <a class="btn btn-light" href="mailto:hola@automatik.cr">Escríbenos</a>
+        <a class="btn btn-whatsapp" href="https://wa.me/50660001234" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <div><strong>AUTOMATIK CR</strong><br><span>Automatizamos tu éxito.</span></div>
+    <div>© 2026 AUTOMATIK CR</div>
+  </div>
+</footer>
+
+</body>
+</html>
