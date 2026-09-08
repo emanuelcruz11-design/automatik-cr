@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template
 
 app = Flask(__name__)
@@ -10,7 +9,8 @@ INDUSTRIES = [
         "icon": "🍽️",
         "tagline": "Menú, pedidos, cocina y control en un solo flujo.",
         "problems": ["Pedidos manuales y errores de digitación", "Demoras entre salón y cocina", "Poca visibilidad del estado de cada orden"],
-        "solutions": ["Menú digital", "Pedidos por mesa o para llevar", "Panel de cocina", "Estados del pedido", "Reportes de ventas"]
+        "solutions": ["Menú digital", "Pedidos por mesa o para llevar", "Panel de cocina", "Estados del pedido", "Reportes de ventas"],
+        "examples": ["Pedido digital que llega directo a cocina", "Avisos de estado para salón o cliente", "Reporte de productos más vendidos"]
     },
     {
         "slug": "comercios",
@@ -18,7 +18,8 @@ INDUSTRIES = [
         "icon": "🛍️",
         "tagline": "Ventas, consultas y seguimiento con menos trabajo manual.",
         "problems": ["Consultas repetitivas", "Cotizaciones manuales", "Seguimiento disperso"],
-        "solutions": ["Catálogo web", "Bots de atención", "Cotizaciones automáticas", "Seguimiento comercial", "Reportes"]
+        "solutions": ["Catálogo web", "Bots de atención", "Cotizaciones automáticas", "Seguimiento comercial", "Reportes"],
+        "examples": ["Formulario que registra oportunidades", "Respuestas automáticas a preguntas frecuentes", "Seguimiento de cotizaciones y clientes"]
     },
     {
         "slug": "oficinas",
@@ -26,7 +27,8 @@ INDUSTRIES = [
         "icon": "🏢",
         "tagline": "Procesos administrativos más ágiles y trazables.",
         "problems": ["Correos repetitivos", "Documentos manuales", "Información en múltiples archivos"],
-        "solutions": ["Automatización de correos", "Generación de documentos", "Formularios", "Dashboards", "Flujos de aprobación"]
+        "solutions": ["Automatización de correos", "Generación de documentos", "Formularios", "Dashboards", "Flujos de aprobación"],
+        "examples": ["Envíos masivos con documentos personalizados", "Consolidación de datos en reportes", "Alertas y seguimiento de tareas"]
     },
     {
         "slug": "finanzas",
@@ -34,7 +36,8 @@ INDUSTRIES = [
         "icon": "🏦",
         "tagline": "Conciliaciones, consultas, reportes y controles automatizados.",
         "problems": ["Altos volúmenes de datos", "Conciliaciones manuales", "Seguimientos periódicos"],
-        "solutions": ["Bots de consulta", "Conciliaciones automáticas", "Alertas", "Reportes ejecutivos", "Correos masivos con adjuntos"]
+        "solutions": ["Bots de consulta", "Conciliaciones automáticas", "Alertas", "Reportes ejecutivos", "Correos masivos con adjuntos"],
+        "examples": ["Consulta masiva de información", "Cruce y validación de bases", "Generación y distribución de reportes"]
     },
     {
         "slug": "construccion",
@@ -42,7 +45,8 @@ INDUSTRIES = [
         "icon": "🏗️",
         "tagline": "Control de obra y reportes con información más clara.",
         "problems": ["Seguimiento manual de avances", "Reportes dispersos", "Control de costos y actividades"],
-        "solutions": ["Dashboards de obra", "Formularios de campo", "Control de avances", "Reportes automáticos", "Portales de proyecto"]
+        "solutions": ["Dashboards de obra", "Formularios de campo", "Control de avances", "Reportes automáticos", "Portales de proyecto"],
+        "examples": ["Registro de avances desde campo", "Panel de proyectos, responsables y estados", "Gestión de usuarios y acceso por proyecto"]
     },
     {
         "slug": "turismo",
@@ -50,7 +54,8 @@ INDUSTRIES = [
         "icon": "🏨",
         "tagline": "Atención, reservas y seguimiento de huéspedes.",
         "problems": ["Consultas frecuentes", "Procesos de reserva manuales", "Seguimiento fragmentado"],
-        "solutions": ["Bots de atención", "Formularios de reserva", "Recordatorios", "Guías digitales", "Paneles de seguimiento"]
+        "solutions": ["Bots de atención", "Formularios de reserva", "Recordatorios", "Guías digitales", "Paneles de seguimiento"],
+        "examples": ["Captura automática de solicitudes", "Confirmaciones y recordatorios", "Panel de reservas y seguimiento"]
     },
     {
         "slug": "educacion",
@@ -58,7 +63,8 @@ INDUSTRIES = [
         "icon": "🎓",
         "tagline": "Comunicación y procesos académicos más eficientes.",
         "problems": ["Consultas repetitivas", "Seguimientos manuales", "Información dispersa"],
-        "solutions": ["Bots de información", "Formularios", "Recordatorios", "Portales informativos", "Reportes"]
+        "solutions": ["Bots de información", "Formularios", "Recordatorios", "Portales informativos", "Reportes"],
+        "examples": ["Inscripciones y solicitudes digitales", "Recordatorios automáticos", "Reportes de seguimiento"]
     },
     {
         "slug": "pymes",
@@ -66,7 +72,8 @@ INDUSTRIES = [
         "icon": "🚀",
         "tagline": "Tecnología práctica para crecer sin complicarse.",
         "problems": ["Procesos manuales", "Poca presencia digital", "Seguimiento comercial limitado"],
-        "solutions": ["Página web", "WhatsApp y formularios", "Automatizaciones", "Cotizaciones", "Reportes básicos"]
+        "solutions": ["Página web", "WhatsApp y formularios", "Automatizaciones", "Cotizaciones", "Reportes básicos"],
+        "examples": ["Sitio web con contacto directo", "Registro de prospectos", "Automatización de tareas administrativas"]
     }
 ]
 
