@@ -198,3 +198,8 @@ footer{background:#061327;color:#bfd0e7;padding:45px 0 22px}.footer-grid{display
 .demo-center-hero .demo-v4-grid{align-items:center}.mobile-test-card{display:none}.mini-link{display:inline-block;margin-top:8px;font-weight:800;color:#ff8a2a;text-decoration:none}.demo-role-section{background:#f7f9fc}.demo-role-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}.demo-role-card{background:#fff;border:1px solid #e5e9f0;border-radius:22px;padding:24px;box-shadow:0 14px 35px rgba(5,21,45,.06)}.demo-role-card .role-icon{font-size:2rem}.demo-role-card small{display:block;margin-top:18px;letter-spacing:.12em;font-weight:800;color:#8a96a8}.demo-role-card h3{font-size:1.3rem;margin:7px 0}.demo-role-card p{color:#667085;line-height:1.6;min-height:100px}.demo-role-card a{font-weight:800;text-decoration:none;color:#146cff}.demo-instructions-section{padding-top:25px}
 @media(max-width:900px){.demo-role-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:650px){.desktop-qr-stage,.demo-actions-desktop{display:none!important}.mobile-test-card{display:grid;gap:12px;background:#fff;border-radius:20px;padding:18px;box-shadow:0 16px 40px rgba(0,0,0,.08)}.mobile-test-card span{font-weight:700;color:#5d6674}.demo-role-grid{grid-template-columns:1fr}.demo-role-card p{min-height:0}}
+
+/* V12 · Redes sociales */
+.social-links{display:flex!important;gap:8px!important;flex-wrap:wrap;margin-top:4px}
+.social-links a{display:inline-flex;align-items:center;justify-content:center;padding:7px 10px;border:1px solid rgba(56,191,255,.28);border-radius:10px;background:rgba(255,255,255,.04);color:#dcecff!important;text-decoration:none;transition:.2s ease}
+.social-links a:hover{border-color:#38bfff;background:rgba(56,191,255,.12);transform:translateY(-1px)}
