@@ -76,7 +76,9 @@ def industry(slug):
 
 @app.route("/demo-restaurante")
 def restaurant_demo():
-    return render_template("restaurant_demo_v4.html", restaurant=RESTAURANT)
+    # Entrada única de la demostración: siempre inicia desde la experiencia del cliente.
+    categories = list(dict.fromkeys(item["category"] for item in MENU))
+    return render_template("restaurant_menu.html", restaurant=RESTAURANT, menu=MENU, categories=categories, mesa=7, guided_demo=True)
 
 @app.route("/demo-restaurante/menu/<int:mesa>")
 def restaurant_menu(mesa):

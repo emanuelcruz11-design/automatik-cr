@@ -1,19 +1,20 @@
 <!doctype html><html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{{ restaurant.name }} · Mesa {{ mesa }}</title>
+<title>{{ restaurant.name }} · Demo Cliente</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/restaurant_v4.css') }}">
 </head><body class="rest-body">
-<nav class="demo-nav"><div class="demo-nav-left"><button type="button" class="nav-back" onclick="history.back()">← Volver</button><a href="{{ url_for('restaurant_demo') }}">Centro demo</a></div><div><a class="active" href="{{ url_for('restaurant_menu', mesa=mesa) }}">Cliente</a><a href="{{ url_for('restaurant_kitchen') }}">Cocina</a><a href="{{ url_for('restaurant_admin') }}">Administración</a><a href="{{ url_for('restaurant_qr_hub') }}">QR</a></div></nav>
+<nav class="demo-nav guided-nav"><div class="guided-step"><b>DEMO 1 DE 3</b><span>Cliente</span></div><div class="guided-progress"><span class="active">1 · Cliente</span><span>2 · Cocina</span><span>3 · Administración</span></div><a class="guided-exit" href="{{ url_for('home') }}">Salir de la demo</a></nav>
 <header class="rest-hero">
   <div class="rest-overlay"></div>
   <div class="rest-hero-content">
-    <span class="rest-kicker">MENÚ DIGITAL · MESA {{ mesa }}</span>
+    <span class="rest-kicker">PASO 1 · EXPERIENCIA DEL CLIENTE</span>
     <h1>{{ restaurant.name }}</h1><p>{{ restaurant.subtitle }}</p>
     <div class="rest-meta"><span>⏱ 20–30 min</span><span>★ 4.9 demo</span><span>📍 Santa Ana, CR</span></div>
   </div>
 </header>
+<div class="guided-instruction"><b>1. Hacé un pedido como cliente.</b><span>Elegí productos, revisá el carrito y completá el pago demo. Después se habilitará el botón para continuar a Cocina.</span></div>
 <div class="rest-sticky">
   <div class="search-wrap"><input id="searchInput" placeholder="Buscar hamburguesas, bebidas, postres…"></div>
   <div class="category-scroll" id="categoryScroll">
@@ -23,7 +24,7 @@
 </div>
 <main class="rest-main">
   <section class="menu-section">
-    <div class="welcome-note"><b>Bienvenido 👋</b><span>Pedí desde tu mesa. Los precios son ficticios y esta experiencia es una demostración de AUTOMATIK CR.</span></div>
+    <div class="welcome-note"><b>Bienvenido 👋</b><span>Esta experiencia es una demostración de AUTOMATIK CR. Los productos y precios son ficticios.</span></div>
     <div id="menuGrid" class="menu-grid">
       {% for item in menu %}
       <article class="food-card" data-category="{{ item.category }}" data-name="{{ item.name|lower }} {{ item.desc|lower }}">
@@ -51,9 +52,9 @@
 <div id="statusModal" class="status-modal hidden"><div class="status-card">
   <button id="closeStatus" class="modal-close">✕</button>
   <span class="status-icon">✓</span><small>Pedido creado</small><h2 id="orderId">BU-0000</h2>
-  <p>Revisá el total y completá el pago. Solo después del pago el pedido será enviado a cocina.</p>
+  <p>Completá el pago para enviar el pedido a cocina.</p>
   <div class="progress-track" id="progressTrack"></div>
-  <div class="status-line"><span>Estado actual</span><strong id="orderStatus">Recibido</strong></div>
+  <div class="status-line"><span>Estado actual</span><strong id="orderStatus">Pendiente de pago</strong></div>
   <div class="order-time-grid">
     <div><small>Inicio</small><strong id="orderStart">--:--</strong></div>
     <div><small>Entrega estimada</small><strong id="orderEstimate">--:--</strong></div>
@@ -61,17 +62,17 @@
   </div>
   <div class="status-line"><span>Total</span><strong id="orderFinalTotal">₡0</strong></div>
   <div id="paymentBlock" class="client-payment-note">
-    <b>Paso 2 · Pago del cliente</b>
-    <span>Seleccioná un método de pago demo. Al aprobarse, la orden aparecerá automáticamente en Cocina.</span>
+    <b>Pago del cliente</b>
+    <span>Al aprobar el pago demo, la orden quedará disponible en el panel de Cocina.</span>
     <label class="field-label">Método de pago
       <select id="paymentMethod"><option>Tarjeta demo</option><option>SINPE demo</option><option>Efectivo demo</option></select>
     </label>
     <button id="payOrder" class="pay-btn">Pagar y enviar a cocina</button>
   </div>
-  <div id="paidConfirmation" class="client-payment-note hidden"><b>Pago aprobado ✓</b><span>El pedido ya fue enviado a cocina. Podés seguir su preparación aquí.</span></div>
-  <div class="demo-next-actions"><a href="{{ url_for('restaurant_kitchen') }}" target="_blank">Ver pedido en cocina</a><a href="{{ url_for('restaurant_admin') }}" target="_blank">Ver administración</a></div>
-  <a id="invoiceBtn" class="invoice-btn hidden" href="#" target="_blank">Ver factura PDF</a>
+  <div id="paidConfirmation" class="client-payment-note hidden"><b>Pago aprobado ✓</b><span>La orden ya está en Cocina. Continuá con el paso 2 para procesarla.</span></div>
+  <a id="invoiceBtn" class="invoice-btn hidden" href="#" target="_blank">Ver comprobante PDF</a>
+  <a id="continueKitchen" class="guided-continue hidden" href="{{ url_for('restaurant_kitchen') }}">Continuar a Cocina →</a>
 </div></div>
-<script>window.RESTAURANT_DEMO={mesa:{{ mesa }}};</script>
+<script>window.RESTAURANT_DEMO={mesa:{{ mesa }},guided:true};</script>
 <script src="{{ url_for('static', filename='js/restaurant_menu.js') }}"></script>
 </body></html>
