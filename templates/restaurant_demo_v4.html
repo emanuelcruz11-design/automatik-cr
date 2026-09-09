@@ -1,39 +1,57 @@
 {% extends 'base.html' %}
 {% block title %}Demo Restaurante | AUTOMATIK CR{% endblock %}
 {% block content %}
-<section class="demo-v4-hero">
+<section class="demo-v4-hero demo-center-hero">
   <div class="container demo-v4-grid">
     <div>
-      <span class="eyebrow">DEMO INTERACTIVA · RESTAURANTES</span>
-      <h1>Un pedido completo desde el QR hasta cocina.</h1>
-      <p>Escaneá el código como si estuvieras sentado en la mesa 7. Elegí productos, personalizá el pedido, enviá la orden y seguí su estado en tiempo real.</p>
-      <div class="demo-actions">
-        <a class="btn btn-primary" href="{{ url_for('restaurant_menu', mesa=7) }}">Abrir menú de la mesa 7</a>
-        <a class="btn btn-secondary" href="{{ url_for('restaurant_kitchen') }}" target="_blank">Abrir panel de cocina</a>
-        <a class="btn btn-secondary" href="{{ url_for('restaurant_admin') }}" target="_blank">Abrir administración</a>
+      <span class="eyebrow">CENTRO DE DEMOSTRACIÓN · RESTAURANTES</span>
+      <h1>Probá el sistema completo, de cliente a administración.</h1>
+      <p>Esta demo está pensada para recorrer todo el proceso sin conocer rutas técnicas: escaneá el QR o abrí el menú, generá un pedido, procesalo en cocina y revisá métricas en administración.</p>
+      <div class="demo-actions demo-actions-desktop">
+        <a class="btn btn-primary" href="{{ url_for('restaurant_menu', mesa=7) }}">Probar como cliente · Mesa 7</a>
+        <a class="btn btn-secondary" href="{{ url_for('restaurant_kitchen') }}">Abrir cocina</a>
+        <a class="btn btn-secondary" href="{{ url_for('restaurant_admin') }}">Abrir administración</a>
       </div>
       <div class="demo-flow-chips">
-        <span>1 · QR</span><span>2 · Menú</span><span>3 · Carrito</span><span>4 · Cocina</span><span>5 · Entrega</span><span>6 · Pago</span>
+        <span>1 · Cliente</span><span>2 · Pedido</span><span>3 · Cocina</span><span>4 · Entrega</span><span>5 · Pago</span><span>6 · Factura PDF</span><span>7 · Administración</span>
       </div>
     </div>
-    <div class="qr-stage">
+    <div class="qr-stage desktop-qr-stage">
       <div class="phone-card">
         <div class="phone-top">{{ restaurant.name }} <small>{{ restaurant.subtitle }}</small></div>
         <img class="qr-image" src="{{ url_for('restaurant_qr', mesa=7) }}" alt="QR mesa 7">
         <strong>Mesa 7</strong>
-        <p>Escaneá este QR con el teléfono</p>
+        <p>Si estás en computadora, escaneá este QR con el teléfono.</p>
+        <a class="mini-link" href="{{ url_for('restaurant_qr_hub') }}">Ver todos los QR</a>
       </div>
+    </div>
+    <div class="mobile-test-card">
+      <span>📱 Estás viendo la demo desde un dispositivo móvil</span>
+      <a class="btn btn-primary" href="{{ url_for('restaurant_menu', mesa=7) }}">Iniciar prueba como cliente</a>
     </div>
   </div>
 </section>
-<section class="section">
+
+<section class="section demo-role-section">
   <div class="container">
-    <div class="section-heading"><span class="eyebrow">FLUJO COMPLETO</span><h2>La experiencia que puede vivir un cliente real.</h2></div>
-    <div class="feature-grid">
-      <article class="feature-card"><b>01</b><h3>Escaneo por mesa</h3><p>Cada mesa puede tener su propio QR para identificar automáticamente el origen del pedido.</p></article>
-      <article class="feature-card"><b>02</b><h3>Menú visual</h3><p>Categorías, fotos, precios, etiquetas, observaciones y productos en un diseño móvil moderno.</p></article>
-      <article class="feature-card"><b>03</b><h3>Pedido a cocina</h3><p>La orden llega al panel con hora, mesa, detalle de productos y notas del cliente.</p></article>
-      <article class="feature-card"><b>04</b><h3>Estados en vivo</h3><p>Recibido, en preparación, listo, entregado y pagado. El cliente ve el avance.</p></article>
+    <div class="section-heading"><span class="eyebrow">ELEGÍ UNA VISTA</span><h2>Todo el recorrido desde una sola pantalla.</h2><p>Podés abrir cada módulo en pestañas separadas y ver cómo el mismo pedido cambia en tiempo real.</p></div>
+    <div class="demo-role-grid">
+      <article class="demo-role-card role-client"><span class="role-icon">📱</span><small>VISTA 1</small><h3>Cliente</h3><p>Menú, carrito, pedido, hora de inicio, entrega estimada, seguimiento, pago y factura PDF.</p><a href="{{ url_for('restaurant_menu', mesa=7) }}">Probar menú →</a></article>
+      <article class="demo-role-card role-qr"><span class="role-icon">▦</span><small>VISTA 2</small><h3>QR por mesa</h3><p>Elegí una mesa y escaneá su código para simular la experiencia real en salón.</p><a href="{{ url_for('restaurant_qr_hub') }}">Ver códigos QR →</a></article>
+      <article class="demo-role-card role-kitchen"><span class="role-icon">👨‍🍳</span><small>VISTA 3</small><h3>Cocina</h3><p>Recibí órdenes, revisá hora, tiempo estimado y avanzá el estado hasta la entrega.</p><a href="{{ url_for('restaurant_kitchen') }}">Abrir cocina →</a></article>
+      <article class="demo-role-card role-admin"><span class="role-icon">📊</span><small>VISTA 4</small><h3>Administración</h3><p>Ventas, pedidos, mesas activas, inicio, fin, duración y actividad reciente.</p><a href="{{ url_for('restaurant_admin') }}">Abrir administración →</a></article>
+    </div>
+  </div>
+</section>
+
+<section class="section demo-instructions-section">
+  <div class="container">
+    <div class="section-heading"><span class="eyebrow">PRUEBA RECOMENDADA</span><h2>Hacé el recorrido de principio a fin.</h2></div>
+    <div class="feature-grid demo-steps-grid">
+      <article class="feature-card"><b>01</b><h3>Entrá como cliente</h3><p>En celular usá el botón de prueba. En computadora podés escanear el QR de la Mesa 7.</p></article>
+      <article class="feature-card"><b>02</b><h3>Enviá una orden</h3><p>Elegí productos y confirmá. El sistema mostrará inicio, entrega estimada y número de pedido.</p></article>
+      <article class="feature-card"><b>03</b><h3>Procesá en cocina</h3><p>Abrí Cocina y avanzá: Recibido → En preparación → Listo → Entregado.</p></article>
+      <article class="feature-card"><b>04</b><h3>Revisá administración</h3><p>Confirmá ventas, estado, tiempos, duración y abrí la factura PDF del pedido pagado.</p></article>
     </div>
   </div>
 </section>

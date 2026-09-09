@@ -1,3 +1,7 @@
+# V5 · Demo Restaurante 360
+
+La demo de restaurante ahora permite recorrer Cliente, QR, Cocina y Administración desde un centro único, con tiempos de inicio, entrega estimada y fin.
+
 
 # AUTOMATIK CR — Web V2 Avanzada
 
@@ -71,3 +75,6 @@ Si el servicio de Render ya está conectado al repositorio y tiene Auto-Deploy a
 - Integración con WhatsApp API.
 - Chatbot IA.
 - Dominio propio automatik.cr.
+
+## V6
+Incluye facturación PDF demostrativa al finalizar el pago. Ver V6_CAMBIOS.md.

@@ -1,8 +1,15 @@
 from flask import Flask, render_template, request, jsonify, send_file
-from datetime import datetime
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 from io import BytesIO
 import threading
 import qrcode
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_CENTER, TA_RIGHT
+from reportlab.lib.units import mm
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image as RLImage
 
 app = Flask(__name__)
 
@@ -46,6 +53,15 @@ MENU = [
 ORDERS = []
 LOCK = threading.Lock()
 STATUS_FLOW = ["Recibido", "En preparación", "Listo", "Entregado", "Pagado"]
+CR_TZ = ZoneInfo("America/Costa_Rica")
+DEFAULT_ESTIMATED_MINUTES = 25
+IVA_RATE = 0.13
+
+def now_cr():
+    return datetime.now(CR_TZ)
+
+def time_label(dt):
+    return dt.strftime("%H:%M")
 
 @app.route("/")
 def home():
@@ -75,6 +91,10 @@ def restaurant_kitchen():
 def restaurant_admin():
     return render_template("restaurant_admin.html", restaurant=RESTAURANT)
 
+@app.route("/demo-restaurante/qr")
+def restaurant_qr_hub():
+    return render_template("restaurant_qr_hub.html", restaurant=RESTAURANT, mesas=range(1, 13))
+
 @app.route("/demo-restaurante/qr/<int:mesa>.png")
 def restaurant_qr(mesa):
     url = request.url_root.rstrip("/") + f"/demo-restaurante/menu/{mesa}"
@@ -93,6 +113,8 @@ def orders_api():
             return jsonify({"error": "El pedido no contiene productos."}), 400
         with LOCK:
             order_id = f"BU-{1000 + len(ORDERS) + 1}"
+            created = now_cr()
+            estimated = created + timedelta(minutes=DEFAULT_ESTIMATED_MINUTES)
             order = {
                 "id": order_id,
                 "mesa": data.get("mesa"),
@@ -101,8 +123,19 @@ def orders_api():
                 "items": items,
                 "total": data.get("total", 0),
                 "status": "Recibido",
-                "created_at": datetime.now().strftime("%H:%M"),
-                "created_iso": datetime.now().isoformat(timespec="seconds")
+                "estimated_minutes": DEFAULT_ESTIMATED_MINUTES,
+                "created_at": time_label(created),
+                "created_iso": created.isoformat(timespec="seconds"),
+                "started_at": time_label(created),
+                "prep_started_at": None,
+                "ready_at": None,
+                "delivered_at": None,
+                "paid_at": None,
+                "finished_at": None,
+                "estimated_delivery_at": time_label(estimated),
+                "status_history": [{"status": "Recibido", "time": time_label(created)}],
+                "invoice_number": None,
+                "payment_method": None
             }
             ORDERS.insert(0, order)
         return jsonify(order), 201
@@ -116,10 +149,106 @@ def order_detail(order_id):
     if request.method == "PATCH":
         data = request.get_json(force=True)
         status = data.get("status")
-        if status in STATUS_FLOW:
+        if status in STATUS_FLOW and status != order.get("status"):
+            stamp = now_cr()
+            label = time_label(stamp)
             order["status"] = status
+            order.setdefault("status_history", []).append({"status": status, "time": label})
+            if status == "En preparación" and not order.get("prep_started_at"):
+                order["prep_started_at"] = label
+            elif status == "Listo" and not order.get("ready_at"):
+                order["ready_at"] = label
+            elif status == "Entregado" and not order.get("delivered_at"):
+                order["delivered_at"] = label
+                order["finished_at"] = label
+            elif status == "Pagado" and not order.get("paid_at"):
+                order["paid_at"] = label
+                order["payment_method"] = data.get("payment_method", "Tarjeta demo")
+                if not order.get("invoice_number"):
+                    order["invoice_number"] = f"FAC-DEMO-{1000 + len([o for o in ORDERS if o.get('invoice_number')]) + 1}"
+                if not order.get("finished_at"):
+                    order["finished_at"] = label
         return jsonify(order)
     return jsonify(order)
+
+
+@app.route("/demo-restaurante/factura/<order_id>.pdf")
+def restaurant_invoice(order_id):
+    order = next((o for o in ORDERS if o["id"] == order_id), None)
+    if not order:
+        return jsonify({"error": "Pedido no encontrado"}), 404
+    if order.get("status") != "Pagado":
+        return jsonify({"error": "La factura demo se genera cuando el pedido está pagado."}), 409
+
+    invoice_number = order.get("invoice_number") or f"FAC-DEMO-{order_id.replace('BU-', '')}"
+    order["invoice_number"] = invoice_number
+    total = float(order.get("total", 0) or 0)
+    subtotal = round(total / (1 + IVA_RATE), 2) if total else 0
+    iva = round(total - subtotal, 2)
+
+    qr_url = request.url_root.rstrip("/") + f"/api/restaurant/orders/{order_id}"
+    qr_img = qrcode.make(qr_url)
+    qr_bio = BytesIO()
+    qr_img.save(qr_bio, format="PNG")
+    qr_bio.seek(0)
+
+    pdf = BytesIO()
+    doc = SimpleDocTemplate(pdf, pagesize=A4, rightMargin=18*mm, leftMargin=18*mm, topMargin=16*mm, bottomMargin=16*mm)
+    styles = getSampleStyleSheet()
+    title = ParagraphStyle('InvoiceTitle', parent=styles['Title'], fontName='Helvetica-Bold', fontSize=22, leading=26, textColor=colors.HexColor('#171411'))
+    orange = ParagraphStyle('Orange', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=9, textColor=colors.HexColor('#F06B21'), spaceAfter=4)
+    small = ParagraphStyle('Small', parent=styles['Normal'], fontSize=8.5, leading=12, textColor=colors.HexColor('#625B55'))
+    right = ParagraphStyle('Right', parent=styles['Normal'], alignment=TA_RIGHT, fontSize=9, leading=13)
+    center = ParagraphStyle('Center', parent=small, alignment=TA_CENTER)
+
+    story = []
+    header = Table([[
+        [Paragraph('BRASA URBANA', title), Paragraph('KITCHEN & GRILL', orange), Paragraph('Comprobante demostrativo', small)],
+        [Paragraph(f'<b>{invoice_number}</b>', right), Paragraph(f'Pedido: {order_id}', right), Paragraph(f'Mesa: {order.get("mesa", "-")}', right)]
+    ]], colWidths=[105*mm, 65*mm])
+    header.setStyle(TableStyle([('VALIGN',(0,0),(-1,-1),'TOP'),('LINEBELOW',(0,0),(-1,0),0.8,colors.HexColor('#EADFD4')),('BOTTOMPADDING',(0,0),(-1,0),8)]))
+    story += [header, Spacer(1, 8*mm)]
+
+    info = Table([
+        ['Cliente', order.get('customer') or 'Cliente'],
+        ['Hora de inicio', order.get('started_at') or order.get('created_at') or '--:--'],
+        ['Hora de pago', order.get('paid_at') or '--:--'],
+        ['Método de pago', order.get('payment_method') or 'Tarjeta demo'],
+        ['Estado', 'PAGADO']
+    ], colWidths=[42*mm, 128*mm])
+    info.setStyle(TableStyle([('FONTNAME',(0,0),(0,-1),'Helvetica-Bold'),('FONTNAME',(1,0),(1,-1),'Helvetica'),('FONTSIZE',(0,0),(-1,-1),9),('TEXTCOLOR',(0,0),(0,-1),colors.HexColor('#746D66')),('BOTTOMPADDING',(0,0),(-1,-1),5)]))
+    story += [info, Spacer(1, 6*mm)]
+
+    rows = [['Cant.', 'Producto', 'Precio unit.', 'Total']]
+    for item in order.get('items', []):
+        qty = int(item.get('qty', 1) or 1)
+        price = float(item.get('price', 0) or 0)
+        rows.append([str(qty), item.get('name','Producto'), f'CRC {price:,.0f}', f'CRC {price*qty:,.0f}'])
+    item_table = Table(rows, colWidths=[18*mm, 92*mm, 30*mm, 30*mm], repeatRows=1)
+    item_table.setStyle(TableStyle([
+        ('BACKGROUND',(0,0),(-1,0),colors.HexColor('#171411')),('TEXTCOLOR',(0,0),(-1,0),colors.white),('FONTNAME',(0,0),(-1,0),'Helvetica-Bold'),('FONTSIZE',(0,0),(-1,-1),9),('ALIGN',(0,0),(0,-1),'CENTER'),('ALIGN',(2,1),(-1,-1),'RIGHT'),('GRID',(0,0),(-1,-1),0.35,colors.HexColor('#EADFD4')),('ROWBACKGROUNDS',(0,1),(-1,-1),[colors.white, colors.HexColor('#FFF8F1')]),('TOPPADDING',(0,0),(-1,-1),7),('BOTTOMPADDING',(0,0),(-1,-1),7)
+    ]))
+    story += [item_table, Spacer(1, 6*mm)]
+
+    totals = Table([
+        ['Subtotal', f'CRC {subtotal:,.2f}'],
+        ['IVA demo 13%', f'CRC {iva:,.2f}'],
+        ['TOTAL', f'CRC {total:,.2f}']
+    ], colWidths=[120*mm, 50*mm])
+    totals.setStyle(TableStyle([('ALIGN',(1,0),(1,-1),'RIGHT'),('FONTNAME',(0,0),(-1,-2),'Helvetica'),('FONTNAME',(0,-1),(-1,-1),'Helvetica-Bold'),('FONTSIZE',(0,0),(-1,-2),10),('FONTSIZE',(0,-1),(-1,-1),13),('LINEABOVE',(0,-1),(-1,-1),1.2,colors.HexColor('#F06B21')),('TOPPADDING',(0,-1),(-1,-1),8)]))
+    story += [totals, Spacer(1, 8*mm)]
+
+    if order.get('notes'):
+        story += [Paragraph('<b>Observaciones del pedido</b>', small), Paragraph(order.get('notes'), small), Spacer(1, 5*mm)]
+
+    qr = RLImage(qr_bio, width=28*mm, height=28*mm)
+    footer = Table([[qr, Paragraph('<b>DEMO AUTOMATIK CR</b><br/>Este documento es una simulación para demostrar el flujo de un sistema de restaurante. No es una factura electrónica ni tiene validez fiscal.<br/><br/>Automatización · Web · Bots · Publicidad Digital', center)]], colWidths=[34*mm,136*mm])
+    footer.setStyle(TableStyle([('VALIGN',(0,0),(-1,-1),'MIDDLE'),('BOX',(0,0),(-1,-1),0.6,colors.HexColor('#EADFD4')),('BACKGROUND',(0,0),(-1,-1),colors.HexColor('#FFF8F1')),('LEFTPADDING',(0,0),(-1,-1),10),('RIGHTPADDING',(0,0),(-1,-1),10),('TOPPADDING',(0,0),(-1,-1),10),('BOTTOMPADDING',(0,0),(-1,-1),10)]))
+    story.append(footer)
+
+    doc.build(story)
+    pdf.seek(0)
+    return send_file(pdf, mimetype='application/pdf', as_attachment=False, download_name=f'{invoice_number}.pdf')
 
 @app.route("/api/restaurant/reset", methods=["POST"])
 def reset_demo():

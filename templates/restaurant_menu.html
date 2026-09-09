@@ -5,6 +5,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/restaurant_v4.css') }}">
 </head><body class="rest-body">
+<nav class="demo-nav"><a href="{{ url_for('restaurant_demo') }}">← Centro demo</a><div><a class="active" href="{{ url_for('restaurant_menu', mesa=mesa) }}">Cliente</a><a href="{{ url_for('restaurant_kitchen') }}">Cocina</a><a href="{{ url_for('restaurant_admin') }}">Administración</a><a href="{{ url_for('restaurant_qr_hub') }}">QR</a></div></nav>
 <header class="rest-hero">
   <div class="rest-overlay"></div>
   <div class="rest-hero-content">
@@ -53,8 +54,15 @@
   <p>Tu pedido fue enviado a cocina. Podés seguir el avance desde esta pantalla.</p>
   <div class="progress-track" id="progressTrack"></div>
   <div class="status-line"><span>Estado actual</span><strong id="orderStatus">Recibido</strong></div>
+  <div class="order-time-grid">
+    <div><small>Inicio</small><strong id="orderStart">--:--</strong></div>
+    <div><small>Entrega estimada</small><strong id="orderEstimate">--:--</strong></div>
+    <div><small>Hora fin</small><strong id="orderFinish">Pendiente</strong></div>
+  </div>
   <div class="status-line"><span>Total</span><strong id="orderFinalTotal">₡0</strong></div>
-  <button id="simulatePay" class="pay-btn hidden">Simular pago</button>
+  <div class="demo-next-actions"><a href="{{ url_for('restaurant_kitchen') }}" target="_blank">Ver este flujo en cocina</a><a href="{{ url_for('restaurant_admin') }}" target="_blank">Ver administración</a></div>
+  <button id="simulatePay" class="pay-btn hidden">Simular pago y generar factura</button>
+  <a id="invoiceBtn" class="invoice-btn hidden" href="#" target="_blank">Ver factura PDF</a>
 </div></div>
 <script>window.RESTAURANT_DEMO={mesa:{{ mesa }}};</script>
 <script src="{{ url_for('static', filename='js/restaurant_menu.js') }}"></script>
