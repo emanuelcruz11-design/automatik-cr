@@ -46,12 +46,12 @@
   <label class="field-label">Tu nombre <input id="customerName" placeholder="Ej. Emmanuel"></label>
   <label class="field-label">Observaciones <textarea id="orderNotes" placeholder="Sin cebolla, salsa aparte, alergias…"></textarea></label>
   <div class="cart-summary"><span>Total</span><strong id="drawerTotal">₡0</strong></div>
-  <button id="submitOrder" class="primary-order-btn">Enviar pedido a cocina</button>
+  <button id="submitOrder" class="primary-order-btn">Continuar al pago</button>
 </aside>
 <div id="statusModal" class="status-modal hidden"><div class="status-card">
   <button id="closeStatus" class="modal-close">✕</button>
-  <span class="status-icon">✓</span><small>Pedido confirmado</small><h2 id="orderId">BU-0000</h2>
-  <p>Tu pedido fue enviado a cocina. Podés seguir el avance desde esta pantalla.</p>
+  <span class="status-icon">✓</span><small>Pedido creado</small><h2 id="orderId">BU-0000</h2>
+  <p>Revisá el total y completá el pago. Solo después del pago el pedido será enviado a cocina.</p>
   <div class="progress-track" id="progressTrack"></div>
   <div class="status-line"><span>Estado actual</span><strong id="orderStatus">Recibido</strong></div>
   <div class="order-time-grid">
@@ -60,8 +60,16 @@
     <div><small>Hora fin</small><strong id="orderFinish">Pendiente</strong></div>
   </div>
   <div class="status-line"><span>Total</span><strong id="orderFinalTotal">₡0</strong></div>
-  <div class="demo-next-actions"><a href="{{ url_for('restaurant_kitchen') }}" target="_blank">Ver este flujo en cocina</a><a href="{{ url_for('restaurant_admin') }}" target="_blank">Ver administración</a></div>
-  <div id="clientPaymentNote" class="client-payment-note hidden"><b>Pedido entregado ✓</b><span>El siguiente paso lo realiza el cliente: simulá el pago para cerrar la cuenta y generar la factura.</span></div><button id="simulatePay" class="pay-btn hidden">Pagar como cliente y generar factura</button>
+  <div id="paymentBlock" class="client-payment-note">
+    <b>Paso 2 · Pago del cliente</b>
+    <span>Seleccioná un método de pago demo. Al aprobarse, la orden aparecerá automáticamente en Cocina.</span>
+    <label class="field-label">Método de pago
+      <select id="paymentMethod"><option>Tarjeta demo</option><option>SINPE demo</option><option>Efectivo demo</option></select>
+    </label>
+    <button id="payOrder" class="pay-btn">Pagar y enviar a cocina</button>
+  </div>
+  <div id="paidConfirmation" class="client-payment-note hidden"><b>Pago aprobado ✓</b><span>El pedido ya fue enviado a cocina. Podés seguir su preparación aquí.</span></div>
+  <div class="demo-next-actions"><a href="{{ url_for('restaurant_kitchen') }}" target="_blank">Ver pedido en cocina</a><a href="{{ url_for('restaurant_admin') }}" target="_blank">Ver administración</a></div>
   <a id="invoiceBtn" class="invoice-btn hidden" href="#" target="_blank">Ver factura PDF</a>
 </div></div>
 <script>window.RESTAURANT_DEMO={mesa:{{ mesa }}};</script>

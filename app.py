@@ -52,7 +52,7 @@ MENU = [
 
 ORDERS = []
 LOCK = threading.Lock()
-STATUS_FLOW = ["Recibido", "En preparación", "Listo", "Entregado", "Pagado"]
+STATUS_FLOW = ["Pendiente de pago", "Recibido", "En preparación", "Listo", "Entregado"]
 CR_TZ = ZoneInfo("America/Costa_Rica")
 DEFAULT_ESTIMATED_MINUTES = 25
 IVA_RATE = 0.13
@@ -122,7 +122,8 @@ def orders_api():
                 "notes": data.get("notes", ""),
                 "items": items,
                 "total": data.get("total", 0),
-                "status": "Recibido",
+                "status": "Pendiente de pago",
+                "payment_status": "Pendiente",
                 "estimated_minutes": DEFAULT_ESTIMATED_MINUTES,
                 "created_at": time_label(created),
                 "created_iso": created.isoformat(timespec="seconds"),
@@ -133,7 +134,7 @@ def orders_api():
                 "paid_at": None,
                 "finished_at": None,
                 "estimated_delivery_at": time_label(estimated),
-                "status_history": [{"status": "Recibido", "time": time_label(created)}],
+                "status_history": [{"status": "Pendiente de pago", "time": time_label(created)}],
                 "invoice_number": None,
                 "payment_method": None
             }
@@ -152,6 +153,18 @@ def order_detail(order_id):
         if status in STATUS_FLOW and status != order.get("status"):
             stamp = now_cr()
             label = time_label(stamp)
+
+            # El cliente debe pagar antes de que cocina reciba la orden.
+            if order.get("status") == "Pendiente de pago" and status != "Recibido":
+                return jsonify({"error": "Primero debe pagarse el pedido."}), 409
+
+            if status == "Recibido" and order.get("status") == "Pendiente de pago":
+                order["payment_status"] = "Pagado"
+                order["paid_at"] = label
+                order["payment_method"] = data.get("payment_method", "Tarjeta demo")
+                if not order.get("invoice_number"):
+                    order["invoice_number"] = f"FAC-DEMO-{1000 + len([o for o in ORDERS if o.get('invoice_number')]) + 1}"
+
             order["status"] = status
             order.setdefault("status_history", []).append({"status": status, "time": label})
             if status == "En preparación" and not order.get("prep_started_at"):
@@ -161,13 +174,6 @@ def order_detail(order_id):
             elif status == "Entregado" and not order.get("delivered_at"):
                 order["delivered_at"] = label
                 order["finished_at"] = label
-            elif status == "Pagado" and not order.get("paid_at"):
-                order["paid_at"] = label
-                order["payment_method"] = data.get("payment_method", "Tarjeta demo")
-                if not order.get("invoice_number"):
-                    order["invoice_number"] = f"FAC-DEMO-{1000 + len([o for o in ORDERS if o.get('invoice_number')]) + 1}"
-                if not order.get("finished_at"):
-                    order["finished_at"] = label
         return jsonify(order)
     return jsonify(order)
 
@@ -177,8 +183,8 @@ def restaurant_invoice(order_id):
     order = next((o for o in ORDERS if o["id"] == order_id), None)
     if not order:
         return jsonify({"error": "Pedido no encontrado"}), 404
-    if order.get("status") != "Pagado":
-        return jsonify({"error": "La factura demo se genera cuando el pedido está pagado."}), 409
+    if order.get("payment_status") != "Pagado":
+        return jsonify({"error": "La factura demo se genera cuando el cliente paga el pedido."}), 409
 
     invoice_number = order.get("invoice_number") or f"FAC-DEMO-{order_id.replace('BU-', '')}"
     order["invoice_number"] = invoice_number
