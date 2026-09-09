@@ -7,9 +7,9 @@
   <div class="hero-overlay"></div>
   <div class="container hero-content">
     <div class="hero-copy reveal">
-      <div class="pill">AUTOMATIZACIÓN · DESARROLLO · IA APLICADA</div>
+      <div class="pill">AUTOMATIZACIÓN · DESARROLLO · PUBLICIDAD DIGITAL · IA APLICADA</div>
       <h1>Convertimos procesos manuales en <span>sistemas que trabajan por tu empresa.</span></h1>
-      <p>Diseñamos bots, automatizaciones, páginas web, dashboards y soluciones a la medida para reducir tareas repetitivas, mejorar el control y acelerar la operación.</p>
+      <p>Diseñamos bots, automatizaciones, páginas web, publicidad digital, dashboards y soluciones a la medida para reducir tareas repetitivas, atraer clientes y acelerar la operación.</p>
       <div class="hero-actions">
         <a class="btn primary" href="#contacto">Cuéntanos tu proceso</a>
         <a class="btn ghost" href="#casos">Ver casos de uso</a>
@@ -69,6 +69,7 @@
       <article class="glass-card reveal"><div class="service-icon">⚙️</div><h3>Automatización de procesos</h3><p>Conectamos pasos repetitivos para reducir intervención manual y errores.</p><span class="card-tag">Conectar</span></article>
       <article class="glass-card reveal"><div class="service-icon">✉️</div><h3>Correos y documentos</h3><p>Envíos masivos, adjuntos, plantillas y generación documental personalizada.</p><span class="card-tag">Comunicar</span></article>
       <article class="glass-card reveal"><div class="service-icon">📊</div><h3>Dashboards y reportes</h3><p>Indicadores y seguimiento visual para tomar decisiones con información clara.</p><span class="card-tag">Controlar</span></article>
+      <article class="glass-card reveal"><div class="service-icon">📣</div><h3>Publicidad digital</h3><p>Campañas para Facebook e Instagram, piezas publicitarias, landing pages, WhatsApp y seguimiento de prospectos conectados en un mismo flujo.</p><span class="card-tag">Atraer clientes</span></article>
     </div>
   </div>
 </section>
@@ -109,6 +110,7 @@
       <article class="case-card reveal"><span>04</span><div><h3>Portales con múltiples usuarios</h3><p>Crear accesos por rol, perfiles, proyectos y permisos para operaciones que requieren cientos de usuarios.</p></div></article>
       <article class="case-card reveal"><span>05</span><div><h3>Pedidos digitales para restaurantes</h3><p>Conectar menú, pedido, cocina, estado y reportes en un flujo simple para cliente y operación.</p></div></article>
       <article class="case-card reveal"><span>06</span><div><h3>Formularios + automatización</h3><p>Capturar solicitudes desde web, organizarlas y disparar alertas, documentos o tareas automáticamente.</p></div></article>
+      <article class="case-card reveal"><span>07</span><div><h3>Publicidad + embudo comercial</h3><p>Conectar anuncios, landing page, WhatsApp y seguimiento para convertir consultas en oportunidades comerciales medibles.</p></div></article>
     </div>
     <div class="case-disclaimer reveal">Los ejemplos describen capacidades y tipos de solución; cada implementación se define según el proceso, volumen y sistemas del cliente.</div>
   </div>
@@ -182,6 +184,7 @@
         <label><span>Nombre *</span><input type="text" id="qName" required placeholder="Tu nombre"></label>
         <label><span>Empresa</span><input type="text" id="qCompany" placeholder="Nombre de empresa"></label>
         <label><span>Teléfono *</span><input type="tel" id="qPhone" required placeholder="Ej. 8888-8888"></label>
+        <label><span>Servicio de interés</span><select id="qService"><option value="">Seleccionar</option><option>Bots empresariales</option><option>IA aplicada</option><option>Páginas y portales web</option><option>Automatización de procesos</option><option>Correos y documentos</option><option>Dashboards y reportes</option><option>Publicidad digital</option><option>Solución integral</option></select></label>
         <label><span>Sector</span><select id="qSector"><option value="">Seleccionar</option>{% for item in industries %}<option>{{ item.name }}</option>{% endfor %}<option>Otro</option></select></label>
       </div>
       <label><span>¿Qué necesitas automatizar o mejorar? *</span><textarea id="qNeed" required rows="5" placeholder="Ej.: envío de correos con adjuntos, control de órdenes, dashboard, página web..."></textarea></label>

@@ -1,0 +1,61 @@
+<!doctype html><html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ restaurant.name }} · Mesa {{ mesa }}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/restaurant_v4.css') }}">
+</head><body class="rest-body">
+<header class="rest-hero">
+  <div class="rest-overlay"></div>
+  <div class="rest-hero-content">
+    <span class="rest-kicker">MENÚ DIGITAL · MESA {{ mesa }}</span>
+    <h1>{{ restaurant.name }}</h1><p>{{ restaurant.subtitle }}</p>
+    <div class="rest-meta"><span>⏱ 20–30 min</span><span>★ 4.9 demo</span><span>📍 Santa Ana, CR</span></div>
+  </div>
+</header>
+<div class="rest-sticky">
+  <div class="search-wrap"><input id="searchInput" placeholder="Buscar hamburguesas, bebidas, postres…"></div>
+  <div class="category-scroll" id="categoryScroll">
+    <button class="cat-btn active" data-cat="Todos">Todos</button>
+    {% for c in categories %}<button class="cat-btn" data-cat="{{ c }}">{{ c }}</button>{% endfor %}
+  </div>
+</div>
+<main class="rest-main">
+  <section class="menu-section">
+    <div class="welcome-note"><b>Bienvenido 👋</b><span>Pedí desde tu mesa. Los precios son ficticios y esta experiencia es una demostración de AUTOMATIK CR.</span></div>
+    <div id="menuGrid" class="menu-grid">
+      {% for item in menu %}
+      <article class="food-card" data-category="{{ item.category }}" data-name="{{ item.name|lower }} {{ item.desc|lower }}">
+        <img src="{{ item.image }}" alt="{{ item.name }}" loading="lazy">
+        <div class="food-content">
+          <div class="food-top"><span class="food-category">{{ item.category }}</span>{% if item.tags %}<span class="food-tag">{{ item.tags[0] }}</span>{% endif %}</div>
+          <h3>{{ item.name }}</h3><p>{{ item.desc }}</p>
+          <div class="food-bottom"><strong>₡{{ '{:,.0f}'.format(item.price) }}</strong><button class="add-btn" data-id="{{ item.id }}" data-name="{{ item.name }}" data-price="{{ item.price }}">Agregar +</button></div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+</main>
+<button id="cartFab" class="cart-fab hidden"><span>🛒 <b id="cartCount">0</b></span><span>Ver pedido · <b id="cartTotal">₡0</b></span></button>
+<div id="drawerBackdrop" class="drawer-backdrop hidden"></div>
+<aside id="cartDrawer" class="cart-drawer">
+  <div class="drawer-head"><div><small>Mesa {{ mesa }}</small><h2>Tu pedido</h2></div><button id="closeCart">✕</button></div>
+  <div id="cartItems" class="cart-items"></div>
+  <label class="field-label">Tu nombre <input id="customerName" placeholder="Ej. Emmanuel"></label>
+  <label class="field-label">Observaciones <textarea id="orderNotes" placeholder="Sin cebolla, salsa aparte, alergias…"></textarea></label>
+  <div class="cart-summary"><span>Total</span><strong id="drawerTotal">₡0</strong></div>
+  <button id="submitOrder" class="primary-order-btn">Enviar pedido a cocina</button>
+</aside>
+<div id="statusModal" class="status-modal hidden"><div class="status-card">
+  <button id="closeStatus" class="modal-close">✕</button>
+  <span class="status-icon">✓</span><small>Pedido confirmado</small><h2 id="orderId">BU-0000</h2>
+  <p>Tu pedido fue enviado a cocina. Podés seguir el avance desde esta pantalla.</p>
+  <div class="progress-track" id="progressTrack"></div>
+  <div class="status-line"><span>Estado actual</span><strong id="orderStatus">Recibido</strong></div>
+  <div class="status-line"><span>Total</span><strong id="orderFinalTotal">₡0</strong></div>
+  <button id="simulatePay" class="pay-btn hidden">Simular pago</button>
+</div></div>
+<script>window.RESTAURANT_DEMO={mesa:{{ mesa }}};</script>
+<script src="{{ url_for('static', filename='js/restaurant_menu.js') }}"></script>
+</body></html>

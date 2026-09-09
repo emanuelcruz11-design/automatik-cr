@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const name = document.getElementById("qName").value.trim();
       const company = document.getElementById("qCompany").value.trim();
       const phone = document.getElementById("qPhone").value.trim();
+      const service = document.getElementById("qService") ? document.getElementById("qService").value.trim() : "";
       const sector = document.getElementById("qSector").value.trim();
       const need = document.getElementById("qNeed").value.trim();
       const text = [
@@ -36,6 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
         `Nombre: ${name}`,
         `Empresa: ${company || "No indicada"}`,
         `Teléfono: ${phone}`,
+        `Servicio de interés: ${service || "No indicado"}`,
         `Sector: ${sector || "No indicado"}`,
         `Necesidad: ${need}`
       ].join("\n");

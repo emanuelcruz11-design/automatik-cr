@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Demo Restaurante | AUTOMATIK CR{% endblock %}
+{% block content %}
+<section class="demo-v4-hero">
+  <div class="container demo-v4-grid">
+    <div>
+      <span class="eyebrow">DEMO INTERACTIVA · RESTAURANTES</span>
+      <h1>Un pedido completo desde el QR hasta cocina.</h1>
+      <p>Escaneá el código como si estuvieras sentado en la mesa 7. Elegí productos, personalizá el pedido, enviá la orden y seguí su estado en tiempo real.</p>
+      <div class="demo-actions">
+        <a class="btn btn-primary" href="{{ url_for('restaurant_menu', mesa=7) }}">Abrir menú de la mesa 7</a>
+        <a class="btn btn-secondary" href="{{ url_for('restaurant_kitchen') }}" target="_blank">Abrir panel de cocina</a>
+        <a class="btn btn-secondary" href="{{ url_for('restaurant_admin') }}" target="_blank">Abrir administración</a>
+      </div>
+      <div class="demo-flow-chips">
+        <span>1 · QR</span><span>2 · Menú</span><span>3 · Carrito</span><span>4 · Cocina</span><span>5 · Entrega</span><span>6 · Pago</span>
+      </div>
+    </div>
+    <div class="qr-stage">
+      <div class="phone-card">
+        <div class="phone-top">{{ restaurant.name }} <small>{{ restaurant.subtitle }}</small></div>
+        <img class="qr-image" src="{{ url_for('restaurant_qr', mesa=7) }}" alt="QR mesa 7">
+        <strong>Mesa 7</strong>
+        <p>Escaneá este QR con el teléfono</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="container">
+    <div class="section-heading"><span class="eyebrow">FLUJO COMPLETO</span><h2>La experiencia que puede vivir un cliente real.</h2></div>
+    <div class="feature-grid">
+      <article class="feature-card"><b>01</b><h3>Escaneo por mesa</h3><p>Cada mesa puede tener su propio QR para identificar automáticamente el origen del pedido.</p></article>
+      <article class="feature-card"><b>02</b><h3>Menú visual</h3><p>Categorías, fotos, precios, etiquetas, observaciones y productos en un diseño móvil moderno.</p></article>
+      <article class="feature-card"><b>03</b><h3>Pedido a cocina</h3><p>La orden llega al panel con hora, mesa, detalle de productos y notas del cliente.</p></article>
+      <article class="feature-card"><b>04</b><h3>Estados en vivo</h3><p>Recibido, en preparación, listo, entregado y pagado. El cliente ve el avance.</p></article>
+    </div>
+  </div>
+</section>
+{% endblock %}
