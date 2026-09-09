@@ -9,3 +9,9 @@
 
 /* V6 · Facturación demo */
 .invoice-btn{display:block;margin-top:10px;width:100%;padding:13px 14px;border-radius:15px;background:#171411;color:#fff;text-align:center;text-decoration:none;font-weight:800}.table-invoice-link{display:inline-block;padding:7px 10px;border-radius:9px;background:#2a2521;color:#ffc78d;text-decoration:none;font-size:.76rem;font-weight:800;white-space:nowrap}
+
+
+/* V7 · Guided demo flow */
+.demo-start-guide{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 20px}.demo-start-guide strong{width:100%;font-size:.95rem}.demo-start-guide span{border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 12px;font-size:.88rem;background:rgba(255,255,255,.05)}
+.qr-help,.kitchen-help,.admin-help{max-width:1280px;margin:0 auto 18px;border:1px solid #3b342f;border-radius:16px;padding:16px 18px;background:#1d1a18}.qr-help h2{margin:4px 0 8px}.qr-help p,.kitchen-help span,.admin-help span{color:#c9bcb2;line-height:1.5}.kitchen-help,.admin-help{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.kitchen-help strong,.admin-help strong{color:#fff}.waiting-payment{display:flex;flex-direction:column;align-items:center;gap:3px;border:1px dashed #d99a62;border-radius:10px;padding:10px;color:#8b5b34;background:#fff6ec}.waiting-payment span{font-size:.82rem}.client-payment-note{margin:12px 0;padding:12px;border-radius:12px;background:#fff4e8;border:1px solid #ffd1a6;display:flex;flex-direction:column;gap:4px}.client-payment-note span{font-size:.9rem;color:#6f625a}.demo-nav-left{display:flex;align-items:center;gap:10px}.nav-back{border:0;background:transparent;color:inherit;font:inherit;cursor:pointer;padding:0}.ops-actions button{font:inherit}.ops-actions button:first-child{cursor:pointer}.hidden{display:none!important}
+@media(max-width:760px){.demo-start-guide span{width:100%;border-radius:12px}.kitchen-help,.admin-help{align-items:flex-start}.ops-actions{gap:6px}}

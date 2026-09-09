@@ -6,9 +6,13 @@
     <div>
       <span class="eyebrow">CENTRO DE DEMOSTRACIÓN · RESTAURANTES</span>
       <h1>Probá el sistema completo, de cliente a administración.</h1>
-      <p>Esta demo está pensada para recorrer todo el proceso sin conocer rutas técnicas: escaneá el QR o abrí el menú, generá un pedido, procesalo en cocina y revisá métricas en administración.</p>
+      <p>La prueba empieza eligiendo una mesa. Primero entrá a <b>Ver todos los QR</b>; luego elegí la mesa que querés simular. En computadora podés escanear su QR con el teléfono y, en móvil, tocar directamente <b>Probar mesa</b>.</p>
+      <div class="demo-start-guide">
+        <strong>Cómo iniciar la prueba</strong>
+        <span>1. Abrí todos los QR</span><span>2. Elegí una mesa</span><span>3. Hacé el pedido como cliente</span><span>4. Procesalo en Cocina</span><span>5. Volvé al cliente para pagar y generar la factura</span>
+      </div>
       <div class="demo-actions demo-actions-desktop">
-        <a class="btn btn-primary" href="{{ url_for('restaurant_menu', mesa=7) }}">Probar como cliente · Mesa 7</a>
+        <a class="btn btn-primary" href="{{ url_for('restaurant_qr_hub') }}">Abrir demo · Ver todos los QR</a>
         <a class="btn btn-secondary" href="{{ url_for('restaurant_kitchen') }}">Abrir cocina</a>
         <a class="btn btn-secondary" href="{{ url_for('restaurant_admin') }}">Abrir administración</a>
       </div>
@@ -27,7 +31,7 @@
     </div>
     <div class="mobile-test-card">
       <span>📱 Estás viendo la demo desde un dispositivo móvil</span>
-      <a class="btn btn-primary" href="{{ url_for('restaurant_menu', mesa=7) }}">Iniciar prueba como cliente</a>
+      <a class="btn btn-primary" href="{{ url_for('restaurant_qr_hub') }}">Elegir mesa para iniciar</a>
     </div>
   </div>
 </section>
@@ -48,10 +52,10 @@
   <div class="container">
     <div class="section-heading"><span class="eyebrow">PRUEBA RECOMENDADA</span><h2>Hacé el recorrido de principio a fin.</h2></div>
     <div class="feature-grid demo-steps-grid">
-      <article class="feature-card"><b>01</b><h3>Entrá como cliente</h3><p>En celular usá el botón de prueba. En computadora podés escanear el QR de la Mesa 7.</p></article>
-      <article class="feature-card"><b>02</b><h3>Enviá una orden</h3><p>Elegí productos y confirmá. El sistema mostrará inicio, entrega estimada y número de pedido.</p></article>
-      <article class="feature-card"><b>03</b><h3>Procesá en cocina</h3><p>Abrí Cocina y avanzá: Recibido → En preparación → Listo → Entregado.</p></article>
-      <article class="feature-card"><b>04</b><h3>Revisá administración</h3><p>Confirmá ventas, estado, tiempos, duración y abrí la factura PDF del pedido pagado.</p></article>
+      <article class="feature-card"><b>01</b><h3>Elegí una mesa</h3><p>Entrá a “Ver todos los QR”. En computadora escaneá el QR; en móvil tocá “Probar mesa”.</p></article>
+      <article class="feature-card"><b>02</b><h3>Pedí como cliente</h3><p>Elegí productos y confirmá. Se mostrará el número de pedido, hora de inicio y entrega estimada.</p></article>
+      <article class="feature-card"><b>03</b><h3>Procesá en cocina</h3><p>En Cocina avanzá únicamente: Recibido → En preparación → Listo → Entregado.</p></article>
+      <article class="feature-card"><b>04</b><h3>Pagá como cliente</h3><p>Volvé a la vista Cliente. Solo ahí se simula el pago, se genera la factura PDF y luego podés revisar Administración.</p></article>
     </div>
   </div>
 </section>

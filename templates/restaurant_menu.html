@@ -5,7 +5,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/restaurant_v4.css') }}">
 </head><body class="rest-body">
-<nav class="demo-nav"><a href="{{ url_for('restaurant_demo') }}">← Centro demo</a><div><a class="active" href="{{ url_for('restaurant_menu', mesa=mesa) }}">Cliente</a><a href="{{ url_for('restaurant_kitchen') }}">Cocina</a><a href="{{ url_for('restaurant_admin') }}">Administración</a><a href="{{ url_for('restaurant_qr_hub') }}">QR</a></div></nav>
+<nav class="demo-nav"><div class="demo-nav-left"><button type="button" class="nav-back" onclick="history.back()">← Volver</button><a href="{{ url_for('restaurant_demo') }}">Centro demo</a></div><div><a class="active" href="{{ url_for('restaurant_menu', mesa=mesa) }}">Cliente</a><a href="{{ url_for('restaurant_kitchen') }}">Cocina</a><a href="{{ url_for('restaurant_admin') }}">Administración</a><a href="{{ url_for('restaurant_qr_hub') }}">QR</a></div></nav>
 <header class="rest-hero">
   <div class="rest-overlay"></div>
   <div class="rest-hero-content">
@@ -61,7 +61,7 @@
   </div>
   <div class="status-line"><span>Total</span><strong id="orderFinalTotal">₡0</strong></div>
   <div class="demo-next-actions"><a href="{{ url_for('restaurant_kitchen') }}" target="_blank">Ver este flujo en cocina</a><a href="{{ url_for('restaurant_admin') }}" target="_blank">Ver administración</a></div>
-  <button id="simulatePay" class="pay-btn hidden">Simular pago y generar factura</button>
+  <div id="clientPaymentNote" class="client-payment-note hidden"><b>Pedido entregado ✓</b><span>El siguiente paso lo realiza el cliente: simulá el pago para cerrar la cuenta y generar la factura.</span></div><button id="simulatePay" class="pay-btn hidden">Pagar como cliente y generar factura</button>
   <a id="invoiceBtn" class="invoice-btn hidden" href="#" target="_blank">Ver factura PDF</a>
 </div></div>
 <script>window.RESTAURANT_DEMO={mesa:{{ mesa }}};</script>
