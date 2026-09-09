@@ -343,6 +343,45 @@ def restaurant_invoice(order_id):
     return send_file(pdf, mimetype='application/pdf', as_attachment=False, download_name=f'{invoice_number}.pdf')
 
 
+
+@app.route("/demo-restaurante/factura-demo.pdf", methods=["POST"])
+def restaurant_invoice_demo_stateless():
+    """Genera el comprobante desde el pedido enviado por el navegador.
+    Esto hace que la demo funcione aunque Render reinicie o cambie de proceso.
+    """
+    order = request.get_json(force=True) or {}
+    if order.get("payment_status") != "Pagado":
+        return jsonify({"error": "El pedido debe estar pagado."}), 409
+    order_id = order.get("id") or "BU-DEMO"
+    invoice_number = order.get("invoice_number") or f"FAC-DEMO-{str(order_id).replace('BU-', '')}"
+    total = float(order.get("total", 0) or 0)
+    subtotal = round(total / (1 + IVA_RATE), 2) if total else 0
+    iva = round(total - subtotal, 2)
+
+    qr_img = qrcode.make(f"AUTOMATIK CR | {order_id} | {invoice_number} | CRC {total:,.0f}")
+    qr_bio = BytesIO(); qr_img.save(qr_bio, format="PNG"); qr_bio.seek(0)
+    pdf = BytesIO()
+    doc = SimpleDocTemplate(pdf, pagesize=A4, rightMargin=18*mm, leftMargin=18*mm, topMargin=16*mm, bottomMargin=16*mm)
+    styles = getSampleStyleSheet()
+    title = ParagraphStyle('InvoiceTitle2', parent=styles['Title'], fontName='Helvetica-Bold', fontSize=22, leading=26, textColor=colors.HexColor('#171411'))
+    orange = ParagraphStyle('Orange2', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=9, textColor=colors.HexColor('#F06B21'), spaceAfter=4)
+    small = ParagraphStyle('Small2', parent=styles['Normal'], fontSize=8.5, leading=12, textColor=colors.HexColor('#625B55'))
+    right = ParagraphStyle('Right2', parent=styles['Normal'], alignment=TA_RIGHT, fontSize=9, leading=13)
+    center = ParagraphStyle('Center2', parent=small, alignment=TA_CENTER)
+    story=[]
+    header=Table([[[Paragraph('BRASA URBANA',title),Paragraph('KITCHEN & GRILL',orange),Paragraph('Comprobante demostrativo',small)],[Paragraph(f'<b>{invoice_number}</b>',right),Paragraph(f'Pedido: {order_id}',right),Paragraph(f'Mesa: {order.get("mesa","-")}',right)]]],colWidths=[105*mm,65*mm])
+    header.setStyle(TableStyle([('VALIGN',(0,0),(-1,-1),'TOP'),('LINEBELOW',(0,0),(-1,0),0.8,colors.HexColor('#EADFD4')),('BOTTOMPADDING',(0,0),(-1,0),8)]));story += [header,Spacer(1,8*mm)]
+    info=Table([['Cliente',order.get('customer') or 'Cliente'],['Hora de inicio',order.get('started_at') or order.get('created_at') or '--:--'],['Hora de pago',order.get('paid_at') or '--:--'],['Método de pago',order.get('payment_method') or 'Tarjeta demo'],['Estado','PAGADO']],colWidths=[42*mm,128*mm])
+    info.setStyle(TableStyle([('FONTNAME',(0,0),(0,-1),'Helvetica-Bold'),('FONTSIZE',(0,0),(-1,-1),9),('BOTTOMPADDING',(0,0),(-1,-1),5)]));story += [info,Spacer(1,6*mm)]
+    rows=[['Cant.','Producto','Precio unit.','Total']]
+    for item in order.get('items',[]):
+        qty=int(item.get('qty',1) or 1);price=float(item.get('price',0) or 0);rows.append([str(qty),item.get('name','Producto'),f'CRC {price:,.0f}',f'CRC {price*qty:,.0f}'])
+    t=Table(rows,colWidths=[18*mm,92*mm,30*mm,30*mm],repeatRows=1);t.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,0),colors.HexColor('#171411')),('TEXTCOLOR',(0,0),(-1,0),colors.white),('FONTNAME',(0,0),(-1,0),'Helvetica-Bold'),('FONTSIZE',(0,0),(-1,-1),9),('GRID',(0,0),(-1,-1),0.35,colors.HexColor('#EADFD4')),('ALIGN',(2,1),(-1,-1),'RIGHT')]));story += [t,Spacer(1,6*mm)]
+    totals=Table([['Subtotal',f'CRC {subtotal:,.2f}'],['IVA demo 13%',f'CRC {iva:,.2f}'],['TOTAL',f'CRC {total:,.2f}']],colWidths=[120*mm,50*mm]);totals.setStyle(TableStyle([('ALIGN',(1,0),(1,-1),'RIGHT'),('FONTNAME',(0,-1),(-1,-1),'Helvetica-Bold'),('FONTSIZE',(0,-1),(-1,-1),13),('LINEABOVE',(0,-1),(-1,-1),1.2,colors.HexColor('#F06B21'))]));story += [totals,Spacer(1,8*mm)]
+    qr=RLImage(qr_bio,width=28*mm,height=28*mm);footer=Table([[qr,Paragraph('<b>DEMO AUTOMATIK CR</b><br/>Documento demostrativo sin validez fiscal.<br/>Automatización · Web · Bots · Publicidad Digital',center)]],colWidths=[34*mm,136*mm]);footer.setStyle(TableStyle([('VALIGN',(0,0),(-1,-1),'MIDDLE'),('BOX',(0,0),(-1,-1),0.6,colors.HexColor('#EADFD4')),('BACKGROUND',(0,0),(-1,-1),colors.HexColor('#FFF8F1'))]));story.append(footer)
+    doc.build(story);pdf.seek(0)
+    return send_file(pdf,mimetype='application/pdf',as_attachment=False,download_name=f'{invoice_number}.pdf')
+
 @app.route("/api/restaurant/reset", methods=["POST"])
 def reset_demo():
     with get_db() as conn:
