@@ -2,7 +2,9 @@ from flask import Flask, render_template, request, jsonify, send_file
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 from io import BytesIO
-import threading
+import os
+import json
+import sqlite3
 import qrcode
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
@@ -50,8 +52,7 @@ MENU = [
     {"id":16,"category":"Postres","name":"Cheesecake de Maracuyá","desc":"Cheesecake cremoso con cobertura de maracuyá.","price":3900,"image":"https://images.unsplash.com/photo-1524351199678-941a58a3df50?auto=format&fit=crop&w=900&q=80","tags":[]}
 ]
 
-ORDERS = []
-LOCK = threading.Lock()
+DB_PATH = os.environ.get("DEMO_DB_PATH", "/tmp/automatik_restaurante_demo.db")
 STATUS_FLOW = ["Pendiente de pago", "Recibido", "En preparación", "Listo", "Entregado"]
 CR_TZ = ZoneInfo("America/Costa_Rica")
 DEFAULT_ESTIMATED_MINUTES = 25
@@ -106,6 +107,77 @@ def restaurant_qr(mesa):
     bio.seek(0)
     return send_file(bio, mimetype="image/png", download_name=f"mesa-{mesa}.png")
 
+def get_db():
+    conn = sqlite3.connect(DB_PATH, timeout=10)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def init_db():
+    with get_db() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS orders (
+                id TEXT PRIMARY KEY,
+                mesa INTEGER,
+                customer TEXT,
+                notes TEXT,
+                items_json TEXT NOT NULL,
+                total REAL NOT NULL DEFAULT 0,
+                status TEXT NOT NULL,
+                payment_status TEXT NOT NULL,
+                estimated_minutes INTEGER,
+                created_at TEXT,
+                created_iso TEXT,
+                started_at TEXT,
+                prep_started_at TEXT,
+                ready_at TEXT,
+                delivered_at TEXT,
+                paid_at TEXT,
+                finished_at TEXT,
+                estimated_delivery_at TEXT,
+                status_history_json TEXT,
+                invoice_number TEXT,
+                payment_method TEXT
+            )
+        """)
+        conn.commit()
+
+
+def row_to_order(row):
+    if row is None:
+        return None
+    d = dict(row)
+    d["items"] = json.loads(d.pop("items_json") or "[]")
+    d["status_history"] = json.loads(d.pop("status_history_json") or "[]")
+    return d
+
+
+def get_order(order_id):
+    with get_db() as conn:
+        row = conn.execute("SELECT * FROM orders WHERE id = ?", (order_id,)).fetchone()
+    return row_to_order(row)
+
+
+def get_all_orders():
+    with get_db() as conn:
+        rows = conn.execute("SELECT * FROM orders ORDER BY rowid DESC").fetchall()
+    return [row_to_order(r) for r in rows]
+
+
+def next_order_id(conn):
+    rows = conn.execute("SELECT id FROM orders").fetchall()
+    nums = []
+    for r in rows:
+        try:
+            nums.append(int(str(r["id"]).replace("BU-", "")))
+        except Exception:
+            pass
+    return f"BU-{max(nums, default=1000) + 1}"
+
+
+init_db()
+
+
 @app.route("/api/restaurant/orders", methods=["GET", "POST"])
 def orders_api():
     if request.method == "POST":
@@ -113,40 +185,34 @@ def orders_api():
         items = data.get("items", [])
         if not items:
             return jsonify({"error": "El pedido no contiene productos."}), 400
-        with LOCK:
-            order_id = f"BU-{1000 + len(ORDERS) + 1}"
-            created = now_cr()
-            estimated = created + timedelta(minutes=DEFAULT_ESTIMATED_MINUTES)
-            order = {
-                "id": order_id,
-                "mesa": data.get("mesa"),
-                "customer": data.get("customer", "Cliente"),
-                "notes": data.get("notes", ""),
-                "items": items,
-                "total": data.get("total", 0),
-                "status": "Pendiente de pago",
-                "payment_status": "Pendiente",
-                "estimated_minutes": DEFAULT_ESTIMATED_MINUTES,
-                "created_at": time_label(created),
-                "created_iso": created.isoformat(timespec="seconds"),
-                "started_at": time_label(created),
-                "prep_started_at": None,
-                "ready_at": None,
-                "delivered_at": None,
-                "paid_at": None,
-                "finished_at": None,
-                "estimated_delivery_at": time_label(estimated),
-                "status_history": [{"status": "Pendiente de pago", "time": time_label(created)}],
-                "invoice_number": None,
-                "payment_method": None
-            }
-            ORDERS.insert(0, order)
-        return jsonify(order), 201
-    return jsonify(ORDERS)
+        created = now_cr()
+        estimated = created + timedelta(minutes=DEFAULT_ESTIMATED_MINUTES)
+        with get_db() as conn:
+            order_id = next_order_id(conn)
+            history = [{"status": "Pendiente de pago", "time": time_label(created)}]
+            conn.execute("""
+                INSERT INTO orders (
+                    id, mesa, customer, notes, items_json, total, status, payment_status,
+                    estimated_minutes, created_at, created_iso, started_at,
+                    prep_started_at, ready_at, delivered_at, paid_at, finished_at,
+                    estimated_delivery_at, status_history_json, invoice_number, payment_method
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                order_id, data.get("mesa"), data.get("customer", "Cliente"), data.get("notes", ""),
+                json.dumps(items, ensure_ascii=False), float(data.get("total", 0) or 0),
+                "Pendiente de pago", "Pendiente", DEFAULT_ESTIMATED_MINUTES,
+                time_label(created), created.isoformat(timespec="seconds"), time_label(created),
+                None, None, None, None, None, time_label(estimated),
+                json.dumps(history, ensure_ascii=False), None, None
+            ))
+            conn.commit()
+        return jsonify(get_order(order_id)), 201
+    return jsonify(get_all_orders())
+
 
 @app.route("/api/restaurant/orders/<order_id>", methods=["GET", "PATCH"])
 def order_detail(order_id):
-    order = next((o for o in ORDERS if o["id"] == order_id), None)
+    order = get_order(order_id)
     if not order:
         return jsonify({"error": "Pedido no encontrado"}), 404
     if request.method == "PATCH":
@@ -156,7 +222,6 @@ def order_detail(order_id):
             stamp = now_cr()
             label = time_label(stamp)
 
-            # El cliente debe pagar antes de que cocina reciba la orden.
             if order.get("status") == "Pendiente de pago" and status != "Recibido":
                 return jsonify({"error": "Primero debe pagarse el pedido."}), 409
 
@@ -165,7 +230,9 @@ def order_detail(order_id):
                 order["paid_at"] = label
                 order["payment_method"] = data.get("payment_method", "Tarjeta demo")
                 if not order.get("invoice_number"):
-                    order["invoice_number"] = f"FAC-DEMO-{1000 + len([o for o in ORDERS if o.get('invoice_number')]) + 1}"
+                    with get_db() as conn:
+                        inv_count = conn.execute("SELECT COUNT(*) AS c FROM orders WHERE invoice_number IS NOT NULL").fetchone()["c"]
+                    order["invoice_number"] = f"FAC-DEMO-{1001 + inv_count}"
 
             order["status"] = status
             order.setdefault("status_history", []).append({"status": status, "time": label})
@@ -176,20 +243,37 @@ def order_detail(order_id):
             elif status == "Entregado" and not order.get("delivered_at"):
                 order["delivered_at"] = label
                 order["finished_at"] = label
-        return jsonify(order)
+
+            with get_db() as conn:
+                conn.execute("""
+                    UPDATE orders SET
+                        status=?, payment_status=?, paid_at=?, payment_method=?, invoice_number=?,
+                        prep_started_at=?, ready_at=?, delivered_at=?, finished_at=?, status_history_json=?
+                    WHERE id=?
+                """, (
+                    order.get("status"), order.get("payment_status"), order.get("paid_at"),
+                    order.get("payment_method"), order.get("invoice_number"), order.get("prep_started_at"),
+                    order.get("ready_at"), order.get("delivered_at"), order.get("finished_at"),
+                    json.dumps(order.get("status_history", []), ensure_ascii=False), order_id
+                ))
+                conn.commit()
+        return jsonify(get_order(order_id))
     return jsonify(order)
 
 
 @app.route("/demo-restaurante/factura/<order_id>.pdf")
 def restaurant_invoice(order_id):
-    order = next((o for o in ORDERS if o["id"] == order_id), None)
+    order = get_order(order_id)
     if not order:
         return jsonify({"error": "Pedido no encontrado"}), 404
     if order.get("payment_status") != "Pagado":
         return jsonify({"error": "La factura demo se genera cuando el cliente paga el pedido."}), 409
 
     invoice_number = order.get("invoice_number") or f"FAC-DEMO-{order_id.replace('BU-', '')}"
-    order["invoice_number"] = invoice_number
+    if not order.get("invoice_number"):
+        with get_db() as conn:
+            conn.execute("UPDATE orders SET invoice_number=? WHERE id=?", (invoice_number, order_id))
+            conn.commit()
     total = float(order.get("total", 0) or 0)
     subtotal = round(total / (1 + IVA_RATE), 2) if total else 0
     iva = round(total - subtotal, 2)
@@ -258,11 +342,14 @@ def restaurant_invoice(order_id):
     pdf.seek(0)
     return send_file(pdf, mimetype='application/pdf', as_attachment=False, download_name=f'{invoice_number}.pdf')
 
+
 @app.route("/api/restaurant/reset", methods=["POST"])
 def reset_demo():
-    with LOCK:
-        ORDERS.clear()
+    with get_db() as conn:
+        conn.execute("DELETE FROM orders")
+        conn.commit()
     return jsonify({"ok": True})
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000, debug=True)
